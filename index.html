@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torbes AI Code Editor - World's #1 Professional Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="css/lib/codemirror.min.css">
+    <link rel="stylesheet" href="css/lib/dracula.min.css">
+    <link rel="stylesheet" href="css/lib/show-hint.min.css">
+    <link rel="stylesheet" href="css/lib/lint.min.css">
+    <link rel="stylesheet" href="css/lib/google-fonts.css">
+</head>
+
+<body class="dark-mode">
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>TORBES AI</span>
+                <span class="premium-badge">PREMIUM</span>
+            </div>
+            <div class="header-actions">
+                <button id="newProjectBtn" class="tooltip" data-tooltip="New Project">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button id="manageProjectsBtn" class="tooltip" data-tooltip="Projects">
+                    <i class="fas fa-folder"></i>
+                </button>
+                <button id="gitBtn" class="tooltip" data-tooltip="Git">
+                    <i class="fab fa-git-alt"></i>
+                </button>
+                <button id="settingsBtn" class="tooltip" data-tooltip="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button id="authToggleBtn" class="tooltip" data-tooltip="Account">
+                    <i class="fas fa-user"></i>
+                </button>
+                <!-- Additional buttons will be added by modules -->
+            </div>
+        </header>
+
+        <div class="top-section">
+            <div class="input-group">
+                <label for="instructionsInput">AI Instructions:</label>
+                <textarea id="instructionsInput"
+                    placeholder="Enter instructions for AI (e.g., 'Optimize this code for performance')"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="modelSelection">AI Model:</label>
+                <select id="modelSelection">
+                    <option value="local">Local Model</option>
+                    <option value="mistral">Mistral AI</option>
+                    <option value="openai">OpenAI GPT-4</option>
+                    <option value="ollama">Ollama</option>
+                    <option value="grok">Grok AI</option>
+                    <option value="qwen">Qwen AI</option>
+                    <option value="lmstudio">LM Studio</option>
+                </select>
+
+                <label for="apiKey">API Key:</label>
+                <input type="password" id="apiKey" placeholder="Enter API key">
+
+                <label for="temperatureInput">Temperature:</label>
+                <input type="range" id="temperatureInput" min="0" max="1" step="0.1" value="0.1">
+                <span id="temperatureValue">0.3</span>
+
+                <label for="maxTokensInput">Max Tokens:</label>
+                <input type="number" id="maxTokensInput" min="100" max="-1" step="100" value="4096">
+
+                <button id="generateBtn" class="primary-btn">
+                    <i class="fas fa-magic"></i> Generate (Ctrl+G)
+                </button>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <button id="runBtn" class="tooltip" data-tooltip="Run Code (Ctrl+R)">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="debugBtn" class="tooltip" data-tooltip="Debug (Ctrl+D)">
+                    <i class="fas fa-bug"></i>
+                </button>
+                <button id="formatBtn" class="tooltip" data-tooltip="Format Code (Ctrl+F)">
+                    <i class="fas fa-align-left"></i>
+                </button>
+            </div>
+
+            <div class="toolbar-group">
+                <button id="copyBtn" class="tooltip" data-tooltip="Copy Code (Ctrl+C)">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button id="downloadBtn" class="tooltip" data-tooltip="Download Project (Ctrl+D)">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button id="themeBtn" class="tooltip" data-tooltip="Toggle Theme (Ctrl+T)">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+
+            <div class="toolbar-group">
+                <button id="undoBtn" class="tooltip" data-tooltip="Undo (Ctrl+Z)">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button id="redoBtn" class="tooltip" data-tooltip="Redo (Ctrl+Y)">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+
+            <div class="toolbar-group">
+                <button id="newFileBtn" class="tooltip" data-tooltip="New File">
+                    <i class="fas fa-file"></i>
+                </button>
+                <button id="uploadBtn" class="tooltip" data-tooltip="Upload Files">
+                    <i class="fas fa-upload"></i>
+                </button>
+                <input type="file" id="fileUpload" multiple hidden>
+            </div>
+
+            <div class="toolbar-group">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button id="searchBtn" class="tooltip" data-tooltip="Search (Ctrl+S)">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="text" id="replaceInput" placeholder="Replace...">
+                <button id="replaceBtn" class="tooltip" data-tooltip="Replace">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+            </div>
+
+            <div class="toolbar-group">
+                <select id="languageSelection">
+                    <option value="html">HTML</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="css">CSS</option>
+                    <option value="python">Python</option>
+                    <option value="markdown">Markdown</option>
+                </select>
+
+                <button id="collaborateBtn" class="tooltip" data-tooltip="Collaborate">
+                    <i class="fas fa-users"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="editor-panel">
+                <div id="editorTabs" class="tabs"></div>
+                <textarea id="codeEditor"></textarea>
+            </div>
+
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <span>Preview</span>
+                    <div class="preview-actions">
+                        <button id="refreshPreviewBtn" class="tooltip" data-tooltip="Refresh Preview">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button id="runBtn" class="tooltip" data-tooltip="Open in New Window (Ctrl+R)">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <iframe id="previewFrame" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div id="status">Ready</div>
+            <div id="status-info">Ln 1, Col 1 | UTF-8 | HTML</div>
+            <div id="collabStatus">Collaboration: Offline</div>
+            <div id="cloudStatus"></div>
+            <div id="aiStatus"></div>
+        </div>
+
+        <div id="messagePanel" class="message-panel"></div>
+
+        <div id="contextMenu" class="context-menu" hidden>
+            <div id="contextGenerate">Generate with AI (Ctrl+G)</div>
+            <div id="contextRun">Run Code (Ctrl+R)</div>
+            <div id="contextDebug">Debug Code</div>
+            <div id="contextFormat">Format Code (Ctrl+F)</div>
+            <div id="contextCopy">Copy Code (Ctrl+C)</div>
+            <div id="contextDownload">Download Project (Ctrl+D)</div>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel" hidden>
+            <h3>Settings</h3>
+
+            <div class="settings-section">
+                <h4>Editor Settings</h4>
+
+                <div class="settings-item">
+                    <label for="customTheme">Theme:</label>
+                    <select id="customTheme">
+                        <option value="dracula">Dracula</option>
+                        <option value="monokai">Monokai</option>
+                        <option value="material">Material</option>
+                        <option value="nord">Nord</option>
+                        <option value="solarized">Solarized</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <label for="fontSize">Font Size:</label>
+                    <input type="number" id="fontSize" min="10" max="24" value="14">
+                </div>
+
+                <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>Projects</h4>
+                <button id="loadProjectBtn">Load Project</button>
+                <button id="exportProjectsBtn">Export All Projects</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>AI Models</h4>
+                <div class="settings-item">
+                    <label for="ollamaModel">Ollama Model:</label>
+                    <select id="ollamaModel">
+                        <option value="gemma:2b">Gemma 2b</option>
+                        <option value="llama3">Llama 3</option>
+                        <option value="mistral">Mistral</option>
+                        <option value="phi">Phi</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <label for="ollamaEndpoint">Ollama Endpoint:</label>
+                    <input type="text" id="ollamaEndpoint" value="http://localhost:11434/api">
+                </div>
+
+                <div class="settings-item">
+                    <label for="mistralModel">Mistral Model:</label>
+                    <select id="mistralModel">
+                        <option value="mistral-large-latest">Mistral Large</option>
+                        <option value="mistral-medium-latest">Mistral Medium</option>
+                        <option value="mistral-small-latest">Mistral Small</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <label for="grokModel">Grok Model:</label>
+                    <select id="grokModel">
+                        <option value="grok-1">Grok-1</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <label for="qwenModel">Qwen Model:</label>
+                    <select id="qwenModel">
+                        <option value="qwen-max">Qwen Max</option>
+                        <option value="qwen-plus">Qwen Plus</option>
+                        <option value="qwen-turbo">Qwen Turbo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Additional settings sections will be added by modules -->
+        </div>
+
+        <div id="projectPanel" class="project-panel" hidden>
+            <h3>Projects</h3>
+            <ul id="projectList"></ul>
+        </div>
+
+        <div id="authPanel" class="auth-panel" hidden>
+            <h3>Account</h3>
+
+            <div class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+
+                <button id="loginBtn" class="primary-btn">Login</button>
+            </div>
+        </div>
+
+        <div id="debugPanel" class="debug-panel" hidden>
+            <h3>Debug Console</h3>
+
+            <div class="debug-toolbar">
+                <button id="toggleBreakpointBtn">Toggle Breakpoint</button>
+                <button id="continueBtn">Continue</button>
+                <button id="stepOverBtn">Step Over</button>
+                <button id="stepIntoBtn">Step Into</button>
+                <button id="stepOutBtn">Step Out</button>
+                <button id="clearConsoleBtn">Clear Console</button>
+            </div>
+
+            <div class="debug-output">
+                <pre id="debugOutput"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load libraries -->
+    <script src="js/lib/codemirror.min.js"></script>
+    <script src="js/lib/javascript.min.js"></script>
+    <script src="js/lib/html-hint.min.js"></script>
+    <script src="js/lib/javascript-hint.min.js"></script>
+    <script src="js/lib/css-hint.min.js"></script>
+    <script src="js/lib/show-hint.min.js"></script>
+    <script src="js/lib/htmlmixed.min.js"></script>
+    <script src="js/lib/xml.min.js"></script>
+    <script src="js/lib/css.min.js"></script>
+    <script src="js/lib/python.min.js"></script>
+    <script src="js/lib/markdown.min.js"></script>
+    <script src="js/lib/closebrackets.min.js"></script>
+    <script src="js/lib/matchbrackets.min.js"></script>
+    <script src="js/lib/active-line.min.js"></script>
+    <script src="js/lib/comment.min.js"></script>
+    <script src="js/lib/dialog.min.js"></script>
+    <script src="js/lib/search.min.js"></script>
+    <script src="js/lib/searchcursor.min.js"></script>
+    <script src="js/lib/lint.min.js"></script>
+    <script src="js/lib/marked.min.js"></script>
+    <script src="js/lib/prettier.standalone.js"></script>
+    <script src="js/lib/prettier.parser-babel.js"></script>
+    <script src="js/lib/prettier.parser-html.js"></script>
+    <script src="js/lib/prettier.parser-postcss.js"></script>
+    <script src="js/lib/prettier.parser-markdown.js"></script>
+
+    <!-- Load AI integrations -->
+    <script src="ollama-integration.js"></script>
+    <script src="mistral-integration.js"></script>
+    <script src="grok-integration.js"></script>
+    <script src="qwen-integration.js"></script>
+
+    <!-- Load application scripts -->
+    <script src="plugin-system.js"></script>
+    <script src="performance-optimizer.js"></script>
+    <script src="testing-environment.js"></script>
+    <script src="advanced-ai-assistant.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
