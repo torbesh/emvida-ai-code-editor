@@ -8,6 +8,49 @@ Der EMVIDA AI Code Editor ist ein leistungsstarker Editor mit integrierten KI-Fu
 
 Der Editor wurde mit folgenden KI-Modell-Integrationen erweitert:
 
+Hier ist die aktualisierte Anleitung für dein GitHub-Projekt [emvida-ai-code-editor](https://github.com/torbesh/emvida-ai-code-editor), angepasst an die neuesten Informationen zu LM Studio:
+
+
+## 🧠 Einrichtung mit LM Studio
+
+### 1. LM Studio herunterladen und installieren
+
+* Besuche die offizielle Website: [lmstudio.ai](https://lmstudio.ai/downloads)
+* Lade die passende Version für dein Betriebssystem herunter (Windows, macOS oder Linux).
+* Führe die Installation gemäß den Anweisungen durch.
+
+### 2. Sprachmodell herunterladen
+
+* Starte LM Studio.
+* Navigiere zum Tab **Discover** (Lupensymbol).
+* Suche nach einem geeigneten Modell (z. B. *Meta-Llama-3.1-8B-Instruct* oder *Phi-3*).
+* Wähle ein Modell mit passender Quantisierung (z. B. Q4\_0 für 4-Bit) entsprechend deiner Hardware aus und lade es herunter.
+
+### 3. Modell laden
+
+* Wechsle zum **Chat**-Tab (Sprechblasensymbol).
+* Wähle im Dropdown-Menü oben das heruntergeladene Modell aus.
+* Das Modell wird nun geladen und ist einsatzbereit.
+
+### 4. Lokalen Server aktivieren
+
+* Gehe zum Tab **Developer**.
+* Aktiviere den Schalter **Server aktivieren**.
+* Der Server ist nun unter `http://localhost:1234/v1` erreichbar.
+
+> **Hinweis:** Standardmäßig erfordert der lokale Server von LM Studio keine Authentifizierung oder Passwort. Die Verbindung erfolgt in der Regel über die OpenAI-kompatible API unter `http://localhost:1234/v1`.&#x20;
+
+---
+
+## 💻 Projekt verwenden
+
+1. Lade die Datei [`EMVIDA_AI_CODE_EDITOR_OFFLINE.zip`](https://github.com/torbesh/emvida-ai-code-editor/blob/main/EMVIDA_AI_CODE_EDITOR_OFFLINE.zip) herunter.
+2. Entpacke die ZIP-Datei in ein Verzeichnis deiner Wahl.
+3. Öffne die Datei `index.html` in deinem bevorzugten Webbrowser.
+
+Stelle sicher, dass der lokale Server von LM Studio aktiv ist, bevor du `index.html` öffnest, damit der Code-Editor korrekt mit dem Sprachmodell kommunizieren kann.
+
+
 ### Ollama Integration
 - Lokale Ausführung von KI-Modellen über Ollama
 - Standard-Endpunkt: http://localhost:11434/api
